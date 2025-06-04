@@ -2,6 +2,7 @@ import fs from "fs";
 import { join } from "path";
 import matter from "gray-matter";
 
+
 const postsDirectory = join(process.cwd(), "_posts");
 
 export function getPostSlugs() {

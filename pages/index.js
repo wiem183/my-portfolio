@@ -2,20 +2,21 @@ import { useRef } from "react";
 import Header from "../components/Header";
 import ServiceCard from "../components/ServiceCard";
 import Socials from "../components/Socials";
-import WorkCard from "../components/WorkCard";
-import { useIsomorphicLayoutEffect } from "../utils";
-import { stagger } from "../animations";
 import Footer from "../components/Footer";
 import Head from "next/head";
 import Button from "../components/Button";
 import Link from "next/link";
 import Cursor from "../components/Cursor";
+import ProjectSlider from "../components/ProjectSlider";
+import { useIsomorphicLayoutEffect } from "../utils";
+import { stagger } from "../animations";
+import { FaLinkedin, FaGithub, FaEnvelope } from "react-icons/fa";
+
 
 // Local Data
 import data from "../data/portfolio.json";
 
 export default function Home() {
-  // Ref
   const workRef = useRef();
   const aboutRef = useRef();
   const textOne = useRef();
@@ -23,7 +24,6 @@ export default function Home() {
   const textThree = useRef();
   const textFour = useRef();
 
-  // Handling Scroll
   const handleWorkScroll = () => {
     window.scrollTo({
       top: workRef.current.offsetTop,
@@ -31,6 +31,7 @@ export default function Home() {
       behavior: "smooth",
     });
   };
+  
 
   const handleAboutScroll = () => {
     window.scrollTo({
@@ -51,6 +52,7 @@ export default function Home() {
   return (
     <div className={`relative ${data.showCursor && "cursor-none"}`}>
       {data.showCursor && <Cursor />}
+
       <Head>
         <title>{data.name}</title>
       </Head>
@@ -63,29 +65,31 @@ export default function Home() {
           handleWorkScroll={handleWorkScroll}
           handleAboutScroll={handleAboutScroll}
         />
+
+        {/* Hero Section */}
         <div className="laptop:mt-20 mt-10">
           <div className="mt-5">
             <h1
               ref={textOne}
-              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 text-bold w-4/5 mob:w-full laptop:w-4/5"
+              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 font-bold w-4/5 mob:w-full laptop:w-4/5"
             >
               {data.headerTaglineOne}
             </h1>
             <h1
               ref={textTwo}
-              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 text-bold w-full laptop:w-4/5"
+              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 font-bold w-full laptop:w-4/5"
             >
               {data.headerTaglineTwo}
             </h1>
             <h1
               ref={textThree}
-              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 text-bold w-full laptop:w-4/5"
+              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 font-bold w-full laptop:w-4/5"
             >
               {data.headerTaglineThree}
             </h1>
             <h1
               ref={textFour}
-              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 text-bold w-full laptop:w-4/5"
+              className="text-3xl tablet:text-6xl laptop:text-6xl laptopl:text-8xl p-1 tablet:p-2 font-bold w-full laptop:w-4/5"
             >
               {data.headerTaglineFour}
             </h1>
@@ -93,24 +97,45 @@ export default function Home() {
 
           <Socials className="mt-2 laptop:mt-5" />
         </div>
-        <div className="mt-10 laptop:mt-30 p-2 laptop:p-0" ref={workRef}>
-          <h1 className="text-2xl text-bold">Work.</h1>
 
-          <div className="mt-5 laptop:mt-10 grid grid-cols-1 tablet:grid-cols-2 gap-4">
+        {/* Work / Projects Section */}
+        <div className="mt-10 laptop:mt-30 p-2 laptop:p-0" ref={workRef}>
+          <h1 className="text-2xl font-bold mb-6">Work.</h1>
+          <div className="grid grid-cols-1 tablet:grid-cols-2 gap-8">
             {data.projects.map((project) => (
-              <WorkCard
+              <div
                 key={project.id}
-                img={project.imageSrc}
-                name={project.title}
-                description={project.description}
-                onClick={() => window.open(project.url)}
-              />
+className="bg-gradient-to-br from-blue-800 via-purple-700 to-indigo-900 text-white rounded-2xl p-6 shadow-xl transition-transform transform hover:-translate-y-1 hover:shadow-2xl border border-indigo-900"
+              >
+                <h2 className="text-xl font-semibold mb-2 text-gray-900">
+                  {project.title}
+                </h2>
+                <p className="mb-4 text-white text-lg leading-relaxed">
+  {project.description}
+</p>
+
+
+                {project.images && project.images.length > 0 && (
+                  <ProjectSlider images={project.images} />
+                )}
+
+
+                {project.url && (
+                  <button
+                    onClick={() => window.open(project.url)}
+                    className="mt-4 inline-block bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition duration-300"
+                  >
+                
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         </div>
 
+        {/* Services Section */}
         <div className="mt-10 laptop:mt-30 p-2 laptop:p-0">
-          <h1 className="tablet:m-10 text-2xl text-bold">Services.</h1>
+          <h1 className="tablet:m-10 text-2xl font-bold">Services.</h1>
           <div className="mt-5 tablet:m-10 grid grid-cols-1 laptop:grid-cols-2 gap-6">
             {data.services.map((service, index) => (
               <ServiceCard
@@ -121,7 +146,8 @@ export default function Home() {
             ))}
           </div>
         </div>
-        {/* This button should not go into production */}
+
+        {/* Edit Button (dev only) */}
         {process.env.NODE_ENV === "development" && (
           <div className="fixed bottom-5 right-5">
             <Link href="/edit">
@@ -129,12 +155,15 @@ export default function Home() {
             </Link>
           </div>
         )}
+
+        {/* About Section */}
         <div className="mt-10 laptop:mt-40 p-2 laptop:p-0" ref={aboutRef}>
-          <h1 className="tablet:m-10 text-2xl text-bold">About.</h1>
-          <p className="tablet:m-10 mt-2 text-xl laptop:text-3xl w-full laptop:w-3/5">
+          <h1 className="tablet:m-10 text-2xl font-bold">About.</h1>
+          <p className="tablet:m-10 mt-2 text-xl laptop:text-3xl w-full laptop:w-3/5 text-gray-800 leading-relaxed">
             {data.aboutpara}
           </p>
         </div>
+
         <Footer />
       </div>
     </div>
